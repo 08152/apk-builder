@@ -1,0 +1,41 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repo laden
+        uses: actions/checkout@v4
+
+      - name: Node installieren
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Dependencies installieren
+        run: npm install
+
+      - name: Capacitor installieren
+        run: npm install @capacitor/core @capacitor/android
+
+      - name: Android Projekt erstellen
+        run: npx cap add android || true
+
+      - name: Web sync
+        run: npx cap sync
+
+      - name: APK bauen
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: APK hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
