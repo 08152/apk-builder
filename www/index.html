@@ -1,125 +1,50 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APK Builder</title>
+name: Build APK
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #111827);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
-}
+on:
+  repository_dispatch:
+    types: [build-apk]
 
-.container {
-  background: #1e293b;
-  padding: 30px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 450px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-h1 {
-  color: #22c55e;
-  margin-bottom: 10px;
-}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-p {
-  opacity: 0.8;
-  margin-bottom: 20px;
-}
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-input, button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-}
+      - name: Install dependencies
+        run: npm install
 
-button {
-  background: #22c55e;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
+      - name: Install Capacitor CLI
+        run: npm install -g @capacitor/cli
 
-button:hover {
-  background: #16a34a;
-  transform: scale(1.02);
-}
+      - name: Build Web App
+        run: npm run build
 
-.small {
-  font-size: 12px;
-  opacity: 0.6;
-  margin-top: 10px;
-}
-</style>
+      - name: Init Capacitor (Android)
+        run: |
+          npx cap init "APK Builder" "com.apkbuilder.app"
 
-</head>
+      - name: Add Android Platform
+        run: |
+          npx cap add android
 
-<body>
+      - name: Copy Web to Android
+        run: |
+          npx cap copy android
 
-<div class="container">
+      - name: Build APK (Gradle)
+        run: |
+          cd android
+          ./gradlew assembleDebug
 
-  <h1>📱 APK Builder</h1>
-
-  <p>Erstelle deine App aus HTML-Dateien</p>
-
-  <!-- App Name -->
-  <input type="text" id="appName" placeholder="App Name">
-
-  <!-- Icon -->
-  <input type="file" id="icon" accept="image/*">
-
-  <!-- HTML Dateien -->
-  <input type="file" id="files" multiple accept=".html,.css,.js">
-
-  <!-- Button -->
-  <button onclick="buildApp()">🚀 App erstellen</button>
-
-  <p class="small">index.html ist immer die Startseite</p>
-
-  <div id="log" class="small"></div>
-
-</div>
-
-<script>
-function buildApp() {
-  const name = document.getElementById("appName").value;
-  const files = document.getElementById("files").files;
-  const log = document.getElementById("log");
-
-  if (!name) {
-    log.innerText = "❌ Bitte App Name eingeben";
-    return;
-  }
-
-  if (files.length === 0) {
-    log.innerText = "❌ Bitte HTML Dateien auswählen";
-    return;
-  }
-
-  // Simulation (später: Appwrite + GitHub Build)
-  log.innerText = "📦 App wird erstellt...\n";
-
-  setTimeout(() => {
-    log.innerText += "✔ index.html erkannt\n";
-    log.innerText += "✔ Dateien verarbeitet\n";
-    log.innerText += "✔ App Struktur erstellt\n\n";
-    log.innerText += "🚀 Build vorbereitet (GitHub/Capacitor später)";
-  }, 1500);
-}
-</script>
-
-</body>
-</html>
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
