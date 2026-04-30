@@ -1,5 +1,5 @@
 {
-  "appId": "com.apk.builder",
-  "appName": "MyApp",
+  "appId": "com.apkbuilder.app",
+  "appName": "APK Builder",
   "webDir": "www"
 }
