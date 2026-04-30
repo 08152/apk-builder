@@ -1,9 +1,11 @@
 {
   "name": "apk-builder",
   "version": "1.0.0",
-  "private": true,
+  "scripts": {
+    "build": "echo building web"
+  },
   "dependencies": {
-    "@capacitor/core": "^5.0.0",
-    "@capacitor/android": "^5.0.0"
+    "@capacitor/core": "latest",
+    "@capacitor/cli": "latest"
   }
 }
