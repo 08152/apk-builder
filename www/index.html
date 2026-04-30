@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APK Builder</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #111827);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.container {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1 {
+  color: #22c55e;
+  margin-bottom: 10px;
+}
+
+p {
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+button {
+  background: #22c55e;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #16a34a;
+  transform: scale(1.02);
+}
+
+.small {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>📱 APK Builder</h1>
+
+  <p>Erstelle deine App aus HTML-Dateien</p>
+
+  <!-- App Name -->
+  <input type="text" id="appName" placeholder="App Name">
+
+  <!-- Icon -->
+  <input type="file" id="icon" accept="image/*">
+
+  <!-- HTML Dateien -->
+  <input type="file" id="files" multiple accept=".html,.css,.js">
+
+  <!-- Button -->
+  <button onclick="buildApp()">🚀 App erstellen</button>
+
+  <p class="small">index.html ist immer die Startseite</p>
+
+  <div id="log" class="small"></div>
+
+</div>
+
+<script>
+function buildApp() {
+  const name = document.getElementById("appName").value;
+  const files = document.getElementById("files").files;
+  const log = document.getElementById("log");
+
+  if (!name) {
+    log.innerText = "❌ Bitte App Name eingeben";
+    return;
+  }
+
+  if (files.length === 0) {
+    log.innerText = "❌ Bitte HTML Dateien auswählen";
+    return;
+  }
+
+  // Simulation (später: Appwrite + GitHub Build)
+  log.innerText = "📦 App wird erstellt...\n";
+
+  setTimeout(() => {
+    log.innerText += "✔ index.html erkannt\n";
+    log.innerText += "✔ Dateien verarbeitet\n";
+    log.innerText += "✔ App Struktur erstellt\n\n";
+    log.innerText += "🚀 Build vorbereitet (GitHub/Capacitor später)";
+  }, 1500);
+}
+</script>
+
+</body>
+</html>
